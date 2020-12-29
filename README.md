@@ -1,5 +1,5 @@
 # Ireland-Covid-cases
-Map shows proportion of covid cases at each county in Ireland, data taken at the end of October
+Map shows proportion of covid cases at each county in Ireland, data taken as of October end
 - Map plotted with the help of matplotlib
 - For reading shapefile, shapefile library is used
 - For reading covid data in csv file, pandas comes to rescue
@@ -9,3 +9,4 @@ Map shows proportion of covid cases at each county in Ireland, data taken at the
 - **color.py** deals with color for your map
 
 ## Snapshot:
+![Ireland covid cases as of October](https://github.com/mathans1695/Ireland-Covid-cases/blob/master/output/Ireland_covid_stat.png)
