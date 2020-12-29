@@ -84,7 +84,7 @@ def plot_shape(ax, shape=None, record=None):
 		ax.fill(x_long, y_lat, color=color)
 	
 def plot_map(sf, figsize = (11,9)):
-	fig, axes = plt.subplots(1, 2, gridspec_kw={'width_ratios': [25, 1]}, sharex=False, sharey=False, figsize=(15, 15))
+	fig, axes = plt.subplots(1, 2, gridspec_kw={'width_ratios': [25, 1]}, sharex=False, sharey=False, figsize=(19.2, 10.8))
 	
 	# plotting color pallete
 	pallete_legend(axes[1], pallete_color)
@@ -96,6 +96,7 @@ def plot_map(sf, figsize = (11,9)):
 	axes[0].set_xlabel('Longitude')
 	axes[0].set_ylabel('Latitude')
 	
+	plt.savefig('output/Ireland_covid_stat.png')
 	plt.show()
 
 plot_map(sf)
