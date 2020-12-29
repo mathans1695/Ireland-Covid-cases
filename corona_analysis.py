@@ -1,8 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import shapefile
-from color import get_color
+from color import get_manual_color
 from latest_cases import LatestCases
+from pallete_legend import pallete_legend
 
 # instantiating LatestCases, pass path and number of counties
 latest_cases = LatestCases('data/cases_by_county_ireland.csv', 26)
@@ -19,6 +20,12 @@ county_proportion = latest_cases.county_wise_proportion(prop_col_names)
 sf = shapefile.Reader("map/counties.shp")
 shapes = sf.shapes()
 records = sf.records()
+
+# set border color and pallete color
+border_color = 'white'
+pallete_color = 'brown'
+font_color = 'black'
+
 
 def get_longitude_and_latitude(points):
 	longitude = []
@@ -39,20 +46,21 @@ def get_longitude_and_latitude(points):
 			
 	return (longitude, latitude)
 	
-def plot_text(df, name):
-	plt.text(
+def plot_text(ax, df, name):
+	ax.text(
 		df['Long'],
 		df['Lat'], 
 		name, 
 		horizontalalignment='center',
 		verticalalignment='center', 
 		fontsize=8, 
-		fontweight='bold'
+		fontweight='bold',
+		color=font_color
 	)
 
 # plot a single shape
 # pass shape and record object as params
-def plot_shape(shape=None, record=None):
+def plot_shape(ax, shape=None, record=None):
 	points = shape.points
 	county_name = record.NAME_TAG
 	
@@ -63,24 +71,30 @@ def plot_shape(shape=None, record=None):
 	cur1 = location[location.CountyName == county_name]
 	
 	if len(cur1.index):
-		plot_text(cur1, county_name)
-		plt.plot(x_long, y_lat, color='black')
+		plot_text(ax, cur1, county_name)
+		ax.plot(x_long, y_lat, color=border_color)
 	
 	# get current county data from county_proportion dataframe
 	cur2 = county_proportion[county_proportion.CountyName == county_name]
 	if len(cur2.index):
-		color = get_color(cur2.ConfirmedCovidCases.item(), 'red')
-		plt.fill(x_long, y_lat, color=color)
+		color = get_manual_color(
+			cur2.ConfirmedCovidCases.item(), 
+			pallete_color
+		)
+		ax.fill(x_long, y_lat, color=color)
 	
 def plot_map(sf, figsize = (11,9)):
-	plt.figure(figsize = figsize)
+	fig, axes = plt.subplots(1, 2, gridspec_kw={'width_ratios': [25, 1]}, sharex=False, sharey=False, figsize=(15, 15))
+	
+	# plotting color pallete
+	pallete_legend(axes[1], pallete_color)
 	
 	for shape in sf.shapeRecords():
-		plot_shape(shape.shape, shape.record)
+		plot_shape(axes[0], shape.shape, shape.record)
 	
-	plt.title('Ireland County-wise Covid Cases in Proportion')
-	plt.xlabel('Longitude')
-	plt.ylabel('Latitude')
+	axes[0].title.set_text('Ireland County-wise Covid Cases in Proportion')
+	axes[0].set_xlabel('Longitude')
+	axes[0].set_ylabel('Latitude')
 	
 	plt.show()
 
